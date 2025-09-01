@@ -1,5 +1,4 @@
 import React, { useState } from "react";
-import Image from "next/image";
 import { MapPin, Phone, Mail, Plane } from "lucide-react";
 import { School } from "../interfaces";
 
@@ -23,10 +22,9 @@ const SchoolCard: React.FC<{ school: School }> = ({ school }) => {
         {school.image && !imageError ? (
           <>
             {/* Actual Image */}
-            <Image
+            <img
               src={school.image}
               alt={`${school.name} - School Image`}
-              fill
               className="object-cover"
               onError={handleImageError}
               onLoad={handleImageLoad}
