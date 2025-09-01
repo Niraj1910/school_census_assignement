@@ -21,11 +21,10 @@ const SchoolCard: React.FC<{ school: School }> = ({ school }) => {
       <div className="h-48 bg-gray-100 relative">
         {school.image && !imageError ? (
           <>
-            {/* Actual Image */}
             <img
               src={school.image}
               alt={`${school.name} - School Image`}
-              className="object-cover"
+              className="w-full h-full object-cover"
               onError={handleImageError}
               onLoad={handleImageLoad}
               sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
