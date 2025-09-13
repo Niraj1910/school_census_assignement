@@ -5,6 +5,8 @@ import { Search } from "lucide-react";
 import SchoolCard from "../components/SchoolCard";
 import { School } from "../interfaces";
 import Navbar from "../components/Navbar";
+import { useAuth } from "../context/AuthContext";
+import { useRouter } from "next/navigation";
 
 const OurSchools: React.FC = () => {
   const [searchTerm, setSearchTerm] = useState("");
@@ -12,13 +14,34 @@ const OurSchools: React.FC = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
+  const { isLoggedIn } = useAuth();
+
+  const router = useRouter();
+
+  useEffect(() => {
+    if (!isLoggedIn) {
+      router.push("/");
+    }
+  }, [isLoggedIn]);
+
   useEffect(() => {
     async function fetchSchoolsData() {
       try {
         setIsLoading(true);
         setError(null);
 
-        const res = await fetch("/api/schools");
+        const token = localStorage.getItem("authToken");
+        const res = await fetch(
+          `${process.env.NEXT_PUBLIC_SERVER_URL}/api/schools/`,
+          {
+            method: "GET",
+            credentials: "include",
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
 
         if (!res.ok) {
           throw new Error(`HTTP error! status: ${res.status}`);
@@ -26,10 +49,10 @@ const OurSchools: React.FC = () => {
 
         const json = await res.json();
 
-        console.log("API Response:", json); // Debug log
+        console.log("API Response:", json.data); // Debug log
 
-        if (json.success && Array.isArray(json.schools)) {
-          setSchools(json.schools);
+        if (Array.isArray(json.data)) {
+          setSchools(json.data);
           console.log("Schools set:", json.schools); // Debug log
         } else {
           console.error("Invalid response format:", json);

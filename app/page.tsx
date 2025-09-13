@@ -6,8 +6,11 @@ import { Plus, List, Users, MapPin, GraduationCap } from "lucide-react";
 import HeroImage from "../public/school-hero.jpg";
 import Navbar from "./components/Navbar";
 import Link from "next/link";
+import { useAuth } from "./context/AuthContext";
 
 const SchoolCensusPage: React.FC = () => {
+  const { isLoggedIn } = useAuth();
+
   return (
     <div className="min-h-screen bg-gray-50">
       {/* Header */}
@@ -35,20 +38,30 @@ const SchoolCensusPage: React.FC = () => {
               comprehensive school database. Add schools, browse listings, and
               connect with educational communities.
             </p>
-            <div className="flex flex-col sm:flex-row gap-4">
-              <Link href={"/add/school"}>
-                <button className="inline-flex items-center px-6 py-3 bg-blue-600 text-white text-sm font-medium rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-colors">
-                  <Plus className="w-4 h-4 mr-2" />
-                  Add New School
-                </button>
-              </Link>
-              <Link href={"/schools"}>
-                <button className="inline-flex items-center px-6 py-3 bg-white border border-gray-300 text-gray-700 text-sm font-medium rounded-md hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-colors">
-                  <List className="w-4 h-4 mr-2" />
-                  Browse Schools
-                </button>
-              </Link>
-            </div>
+
+            {/* Conditional rendering based on auth state */}
+            {isLoggedIn ? (
+              <div className="flex flex-col sm:flex-row gap-4">
+                <Link href={"/add/school"}>
+                  <button className="inline-flex items-center px-6 py-3 bg-blue-600 text-white text-sm font-medium rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-colors">
+                    <Plus className="w-4 h-4 mr-2" />
+                    Add New School
+                  </button>
+                </Link>
+                <Link href={"/schools"}>
+                  <button className="inline-flex items-center px-6 py-3 bg-white border border-gray-300 text-gray-700 text-sm font-medium rounded-md hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-colors">
+                    <List className="w-4 h-4 mr-2" />
+                    Browse Schools
+                  </button>
+                </Link>
+              </div>
+            ) : (
+              <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 mb-6">
+                <p className="text-blue-800 text-sm font-medium">
+                  🔒 Sign in to access all platform features and manage schools
+                </p>
+              </div>
+            )}
           </div>
 
           {/* Hero Image */}
@@ -131,14 +144,26 @@ const SchoolCensusPage: React.FC = () => {
         <section className="bg-gradient-to-r from-blue-600 to-blue-700 rounded-3xl px-8 py-16 text-center text-white">
           <h2 className="text-3xl font-bold mb-4">Ready to Get Started?</h2>
           <p className="text-lg mb-8 opacity-90">
-            Join our platform and start managing school information today
+            {isLoggedIn
+              ? "Start managing school information today"
+              : "Join our platform and start managing school information today"}
           </p>
-          <Link href={"/add/school"}>
-            <button className="inline-flex items-center px-8 py-4 bg-white text-blue-600 text-sm font-semibold rounded-lg hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-white transition-colors shadow-lg">
-              <GraduationCap className="w-5 h-5 mr-2" />
-              Add Your School Now
-            </button>
-          </Link>
+          {isLoggedIn ? (
+            <Link href={"/add/school"}>
+              <button className="inline-flex items-center px-8 py-4 bg-white text-blue-600 text-sm font-semibold rounded-lg hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-white transition-colors shadow-lg">
+                <GraduationCap className="w-5 h-5 mr-2" />
+                Add Your School Now
+              </button>
+            </Link>
+          ) : (
+            <div className="bg-white/20 backdrop-blur-sm rounded-lg p-4 inline-block">
+              <p className="text-sm mb-2">Sign in to access all features</p>
+              <button className="inline-flex items-center px-6 py-2 bg-white text-blue-600 text-sm font-semibold rounded-lg hover:bg-gray-100 transition-colors">
+                <GraduationCap className="w-4 h-4 mr-2" />
+                Get Started
+              </button>
+            </div>
+          )}
         </section>
       </main>
     </div>

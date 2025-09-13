@@ -71,7 +71,6 @@ const useSchoolFormHook = () => {
     setIsSubmitting(true);
 
     try {
-      // Create FormData for file upload
       const formData = new FormData();
       formData.append("schoolName", data.schoolName);
       formData.append("emailAddress", data.emailAddress);
@@ -84,13 +83,26 @@ const useSchoolFormHook = () => {
         formData.append("schoolImage", data.schoolImage[0]);
       }
 
-      const response = await fetch("/api/schools", {
-        method: "POST",
-        body: formData,
-      });
+      const token = localStorage.getItem("authToken");
+      const response = await fetch(
+        `${process.env.NEXT_PUBLIC_SERVER_URL}/api/schools/`,
+        {
+          method: "POST",
+          credentials: "include",
+          body: formData,
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+
+      const responseData = await response.json();
 
       if (response.ok) {
+        alert("School added successfully!");
         router.push("/schools");
+      } else {
+        alert(`Error: ${responseData.error || "Failed to add school"}`);
       }
 
       reset();

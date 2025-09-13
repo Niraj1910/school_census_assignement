@@ -1,11 +1,13 @@
 "use client";
 
-import React from "react";
+import React, { useEffect } from "react";
 import { Controller } from "react-hook-form";
 
 import { GraduationCap, Upload } from "lucide-react";
 import Navbar from "@/app/components/Navbar";
 import useSchoolFormHook from "@/app/hooks/useSchoolFormHook";
+import { useAuth } from "@/app/context/AuthContext";
+import { useRouter } from "next/navigation";
 
 const AddSchoolForm: React.FC = () => {
   const {
@@ -21,6 +23,20 @@ const AddSchoolForm: React.FC = () => {
     selectedFileName,
     setSelectedFileName,
   } = useSchoolFormHook();
+
+  const { isLoggedIn } = useAuth();
+
+  const router = useRouter();
+
+  useEffect(() => {
+    if (!isLoggedIn) {
+      router.push("/");
+    }
+  }, [isLoggedIn, router]);
+
+  if (!isLoggedIn) {
+    return null;
+  }
 
   return (
     <>
